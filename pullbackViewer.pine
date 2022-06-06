@@ -1,0 +1,34 @@
+// This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
+// © xiaohuihuitrader - original tripple M indicator script
+// © emka - modified source code for pullback viewer indicator
+// strimaitis.emilis@gmail.com
+
+//@version=4
+
+study("Pullback Viewer by emka","Pullback Viewer", overlay = true, max_lines_count = 500)
+
+showhigh     = input(true, title = "Bullish pullback", inline = "bullish")
+linecolor1   = input(color.rgb(38, 166, 154), "", inline = "bullish")
+linewidth1   = input(3, "width", inline = "bullish")
+
+showlow      = input(true, title = "Bearish pullback", inline = "bearish")
+linecolor2   = input(color.rgb(239, 83, 80),  "", inline = "bearish")
+linewidth2   = input(3, "width",  inline = "bearish")
+
+Highwick     = close > high[1]
+Lowwick      = close < low[1]
+
+Highwickbar  = 0,    Lowwickbar = 0
+Highwickhigh = 0.0,  Lowwicklow = 0.0 
+Highbody     = 0.0,  Lowbody    = 0.0 
+
+Highwickbar  := valuewhen(Highwick, bar_index, 0)
+Highwickhigh := valuewhen(Highwick, high, 0)
+Highbody     := valuewhen(Highwick, max(close, open), 0)
+
+Lowwickbar   := valuewhen(Lowwick, bar_index, 0)
+Lowwicklow   := valuewhen(Lowwick, low, 0)
+Lowbody      := valuewhen(Lowwick, min(close, open), 0)
+
+highline     = not showhigh ? na : line.new(Highwickbar, Highwickhigh, Highwickbar, Highbody, xloc = xloc.bar_index, color = linecolor1, width = linewidth1, style=line.style_solid)
+lowline      = not showlow  ? na : line.new(Lowwickbar,  Lowwicklow,   Lowwickbar,  Lowbody,  xloc = xloc.bar_index, color = linecolor2, width = linewidth2, style=line.style_solid)
